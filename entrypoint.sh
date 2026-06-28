@@ -7,15 +7,15 @@ chown -R mysql:mysql /var/run/mysqld /var/lib/mysql
 # Initialize MySQL data directory if not already done
 if [ ! -d "/var/lib/mysql/mysql" ]; then
   echo "Initializing MySQL database..."
-  mysqld --initialize-insecure --user=mysql
+  /usr/sbin/mysqld --initialize-insecure --user=mysql
 fi
 
-# Start MySQL daemon in the background
+# Start MySQL daemon directly in the background
 echo "Starting MySQL daemon..."
-mysqld_safe --user=mysql &
+/usr/sbin/mysqld --user=mysql &
 
 # Wait for MySQL to be ready
-until mysqladmin ping >/dev/null 2>&1; do
+until mysqladmin -u root ping >/dev/null 2>&1; do
   echo "Waiting for MySQL daemon to start..."
   sleep 1
 done
