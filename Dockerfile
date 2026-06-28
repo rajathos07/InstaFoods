@@ -23,13 +23,24 @@ RUN rm -rf /opt/tomcat/webapps/*
 # Set up app directory
 WORKDIR /app
 
-# Copy the static webapp files and classes to Tomcat ROOT directory
-COPY src/main/webapp /opt/tomcat/webapps/ROOT
-COPY build/classes /opt/tomcat/webapps/ROOT/WEB-INF/classes
-
-# Copy schema.sql and entrypoint.sh into the container
+# Copy all source code and static webapp files to the container
+COPY src /app/src
 COPY schema.sql /app/schema.sql
 COPY entrypoint.sh /app/entrypoint.sh
+
+# Set up Tomcat deployment ROOT and copy public webapp assets
+RUN mkdir -p /opt/tomcat/webapps/ROOT
+RUN cp -R /app/src/main/webapp/* /opt/tomcat/webapps/ROOT/
+
+# Compile Java source code directly inside the container
+RUN mkdir -p /opt/tomcat/webapps/ROOT/WEB-INF/classes
+RUN javac -d /opt/tomcat/webapps/ROOT/WEB-INF/classes \
+    -cp "/opt/tomcat/lib/*:/opt/tomcat/webapps/ROOT/WEB-INF/lib/*" \
+    /app/src/main/java/com/instafoo/connection/*.java \
+    /app/src/main/java/com/instafoo/Model/*.java \
+    /app/src/main/java/com/instafoo/dao/*.java \
+    /app/src/main/java/com/instafoo/daoImp/*.java \
+    /app/src/main/java/com/instafoo/servlets/*.java
 
 # Give execution permissions to the script
 RUN chmod +x /app/entrypoint.sh
