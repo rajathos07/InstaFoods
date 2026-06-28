@@ -17,6 +17,9 @@ RUN wget https://archive.apache.org/dist/tomcat/tomcat-10/v10.1.34/bin/apache-to
     && tar -xf /tmp/tomcat.tar.gz -C /opt/tomcat --strip-components=1 \
     && rm /tmp/tomcat.tar.gz
 
+# Disable Tomcat shutdown port to prevent cloud health checkers from sending requests to it
+RUN sed -i 's/<Server port="8005" shutdown="SHUTDOWN">/<Server port="-1" shutdown="SHUTDOWN">/g' /opt/tomcat/conf/server.xml
+
 # Remove default Tomcat apps
 RUN rm -rf /opt/tomcat/webapps/*
 
