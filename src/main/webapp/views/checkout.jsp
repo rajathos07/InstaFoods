@@ -10,14 +10,14 @@
 <%
     User loggedInUser = (User) session.getAttribute("user");
     if (loggedInUser == null) {
-        response.sendRedirect("views/login.jsp");
+        response.sendRedirect(request.getContextPath() + "/views/login.jsp");
         return;
     }
 
     Cart cart = (Cart) session.getAttribute("cart");
     Map<Integer, CartItem> cartItems = (cart != null) ? cart.getItems() : null;
     if (cartItems == null || cartItems.isEmpty()) {
-        response.sendRedirect("views/cart.jsp");
+        response.sendRedirect(request.getContextPath() + "/views/cart.jsp");
         return;
     }
 

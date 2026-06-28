@@ -89,7 +89,7 @@
       
       // If email is missing, redirect to login
       if (email == null || email.trim().isEmpty()) {
-          response.sendRedirect("views/login.jsp");
+          response.sendRedirect(request.getContextPath() + "/views/login.jsp");
           return;
       }
   %>

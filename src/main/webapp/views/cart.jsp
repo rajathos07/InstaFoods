@@ -22,7 +22,7 @@
     User loggedInUser = (User) session.getAttribute("user");
     if (loggedInUser == null) {
         session.setAttribute("errorMsg", "Please sign in to access your cart.");
-        response.sendRedirect("views/login.jsp");
+        response.sendRedirect(request.getContextPath() + "/views/login.jsp");
         return;
     }
     /* ── Fetch cart from session ── */

@@ -8,7 +8,7 @@
 <%
     User loggedInUser = (User) session.getAttribute("user");
     if (loggedInUser == null) {
-        response.sendRedirect("views/login.jsp");
+        response.sendRedirect(request.getContextPath() + "/views/login.jsp");
         return;
     }
 
@@ -22,7 +22,7 @@
     List<Map<String, Object>> userOrders = (List<Map<String, Object>>) request.getAttribute("userOrders");
 
     if (order == null) {
-        response.sendRedirect("OrderTrackerServlet");
+        response.sendRedirect(request.getContextPath() + "/OrderTrackerServlet");
         return;
     }
 

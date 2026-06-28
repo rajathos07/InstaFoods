@@ -112,7 +112,7 @@
       
       // If puzzle is somehow missing, redirect to login
       if (puzzleQuestion == null) {
-          response.sendRedirect("views/login.jsp");
+          response.sendRedirect(request.getContextPath() + "/views/login.jsp");
           return;
       }
   %>
