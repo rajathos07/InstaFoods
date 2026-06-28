@@ -7,27 +7,32 @@ import java.sql.SQLException;
 public class DBConnection {
 	
 
-		private static final String url = "jdbc:mysql://localhost:3306/instafoods";
-		private static final String name = "root";
-		private static final String password = "newpassword123";
-		static Connection conn=null;
+	private static String getEnv(String key, String defaultValue) {
+		String value = System.getenv(key);
+		return (value != null) ? value : defaultValue;
+	}
+		
+	public static Connection getConnection() {
+		String dbHost = getEnv("DB_HOST", "localhost");
+		String dbPort = getEnv("DB_PORT", "3306");
+		String dbName = getEnv("DB_NAME", "instafoods");
+		String dbUser = getEnv("DB_USER", "root");
+		String dbPassword = getEnv("DB_PASSWORD", "newpassword123");
+
+		String url = "jdbc:mysql://" + dbHost + ":" + dbPort + "/" + dbName;
+		Connection conn=null;
 			
-		public static Connection getConnection() {
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			conn=DriverManager.getConnection(url,dbUser,dbPassword);
 			
-			try {
-				Class.forName("com.mysql.cj.jdbc.Driver");
-				conn=DriverManager.getConnection(url,name,password);
-				
-			} catch (ClassNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			return conn;
-			
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
+		return conn;
+	}
 
 	
 
