@@ -10,9 +10,14 @@ if [ ! -d "/var/lib/mysql/mysql" ]; then
   /usr/sbin/mysqld --initialize-insecure --user=mysql
 fi
 
-# Start MySQL daemon directly in the background
-echo "Starting MySQL daemon..."
-/usr/sbin/mysqld --user=mysql &
+# Start MySQL daemon directly in the background with LOW MEMORY settings
+echo "Starting MySQL daemon (low memory mode)..."
+/usr/sbin/mysqld --user=mysql \
+  --key-buffer-size=16M \
+  --max-connections=10 \
+  --innodb-buffer-pool-size=16M \
+  --innodb-log-buffer-size=1M \
+  --performance-schema=OFF &
 
 # Wait for MySQL to be ready
 until mysqladmin -u root ping >/dev/null 2>&1; do
@@ -25,6 +30,9 @@ echo "Initializing instafoods database..."
 mysql -e "CREATE DATABASE IF NOT EXISTS instafoods;"
 mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'newpassword123'; FLUSH PRIVILEGES;"
 mysql -u root -p'newpassword123' instafoods < /app/schema.sql
+
+# Set Tomcat Java environment options for low memory limits
+export CATALINA_OPTS="-Xms64M -Xmx192M -XX:+UseSerialGC"
 
 # Start Tomcat in the foreground
 echo "Starting Apache Tomcat..."
